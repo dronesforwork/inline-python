@@ -18,7 +18,10 @@ pub fn compile_error_msg(py: Python, error: PyErr, tokens: TokenStream) -> Token
 		let msg: Option<String> = value.getattr(py, "msg").ok().and_then(|x| x.extract(py).ok());
 		if let (Some(line), Some(msg)) = (line, msg) {
 			if let Some(span) = span_for_line(tokens.clone(), line) {
-				let error = format!("python: {}", msg);
+				let mut error = format!("python: {}", msg);
+				if msg == "cannot assign to function call" {
+					error += ". LIKELY CAUSE: you cannot assign to RUST-Variables, see Context::get_global() instead";
+				}
 				return quote_spanned!(span.into() => compile_error!{#error});
 			}
 		}

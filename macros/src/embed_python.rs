@@ -79,7 +79,7 @@ impl EmbedPython {
 							unreachable!()
 						};
 						let name_str = format!("_RUST_{}", name);
-						self.python.push_str(&name_str);
+						self.python.push_str(&format!("((lambda:{})())", name_str));
 						self.loc.column += name_str.chars().count() - 6 + 1;
 						self.variables.entry(name_str).or_insert(name);
 					} else if x.as_char() == '#' && x.spacing() == Spacing::Joint {

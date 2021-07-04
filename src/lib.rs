@@ -22,6 +22,7 @@
 //!
 //! To reference Rust variables, use `'var`, as shown in the example above.
 //! `var` needs to implement [`pyo3::ToPyObject`].
+//! Do not assign to a `'var`, it will cause a Syntax Error `cannot assign to function call`.
 //!
 //! ## Re-using a Python context
 //!
@@ -69,6 +70,17 @@
 //! };
 //!
 //! assert_eq!(c.get::<i32>("foo"), 5);
+//! ```
+//!
+//! ## Compile Errors
+//! The python code is compiled when the rust code is compiled, so syntax errors are emitted by
+//! `rustc` and not at runtime. They should show up in your IDE.
+//!
+//! Changing rust variables will cause a syntax error because they are implemented as
+//! `((lambda:value)())`
+//! ```compile_fail
+//! # use inline_python::python;
+//! python!{ 'x = 42 }
 //! ```
 //!
 //! ## Syntax issues
